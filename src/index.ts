@@ -3,16 +3,17 @@ import mongoDB from './config/server';
 import userRoutes from './routes/user';
 import cors from 'cors';
 import cookies from 'cookie-parser';
-const app = express();
 import 'dotenv/config';
 
+const app = express();
 app.use(cors({
     origin: ['https://abrigth.netlify.app', 'https://abrigth.netlify.app/'], // Adjust the origin as needed
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }))
-app.use(express.json());
-app.use(cookies());
+
 const PORT = process.env.PORT || 3000;
+app.use(cookies());
+app.use(express.json());
 
 
 app.use('/user', userRoutes);
