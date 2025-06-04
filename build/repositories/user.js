@@ -85,5 +85,16 @@ class UserRepo {
             throw (0, errorHandler_1.default)(error);
         }
     }
+    static async getAllUsers() {
+        try {
+            const users = await User_1.default.find({}, '-password -email -created_at').lean();
+            if (!users || users.length === 0)
+                throw new Error('No users found');
+            return users;
+        }
+        catch (error) {
+            throw (0, errorHandler_1.default)(error);
+        }
+    }
 }
 exports.default = UserRepo;

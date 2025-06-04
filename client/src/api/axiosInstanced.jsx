@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://abtigthts-production.up.railway.app'
+    baseURL: 'http://localhost:3000/'
 });
 
 export default axiosInstance;

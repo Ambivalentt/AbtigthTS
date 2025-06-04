@@ -30,9 +30,6 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
         const token = jwt.sign(user, process.env.JWT_SECRET as string, { expiresIn: '1h' })
         res.cookie('access_token', token, {
             httpOnly: true,
-            secure: true, //cambiar true en producction
-            sameSite: "none", //si el front y el back son de diferentes dominios
-            path: '/'
         })
         res.status(201).json({ user, token: token });
     } catch (error) {
@@ -57,9 +54,7 @@ const logOut = async (_req: Request, res: Response): Promise<void> => {
     try {
         res.clearCookie('access_token', {
             httpOnly: true,
-            secure: true, //cambiar true en producction
-            sameSite: "none", //si el front y el back son de diferentes dominios
-            path: '/'
+       
         });
         res.status(200).json({ message: 'Logged out successfully' });
     } catch (error) {
@@ -77,4 +72,13 @@ const getUserByUsername = async (req: Request, res: Response) => {
     }
 
 }
-export { createUser, loginUser, userDetails, logOut, getUserByUsername };
+
+const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const users = await User.getAllUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(400).json({ message: errorHandler(error).message });
+    }
+}
+export { createUser, loginUser, userDetails, logOut, getUserByUsername, getAllUsers };

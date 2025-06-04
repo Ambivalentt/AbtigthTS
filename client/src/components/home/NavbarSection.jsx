@@ -150,7 +150,11 @@ export default function Navbar() {
                             </button>
                             {dropdownOpen && (
                                 <div className="absolute right-0 mt-2 w-56 bg-[#1a1a1d] border border-[#2a2a2e] rounded-xl shadow-lg py-2 z-50">
-                                    <Link to={`/${user.username}`} className="flex items-center gap-2 px-4 py-2 hover:bg-[#2a2a2e]">
+                                    <Link to=
+                                        {`/${user.username}`}
+                                        className="flex items-center gap-2 px-4 py-2 hover:bg-[#2a2a2e]"
+                                        onClick={() => setDropdownOpen(false)}
+                                        >
                                         <User className="w-4 h-4" /> Mi perfil
                                     </Link>
                                     <Link to="/friends" className="flex items-center gap-2 px-4 py-2 hover:bg-[#2a2a2e]">

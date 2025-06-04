@@ -3,16 +3,17 @@ import Home from './pages/Home.jsx'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import ProfileByUsername from './pages/ProfileByUsername.jsx'
-import AuthRoute from './components/routes/validate.jsx'
 import NotFound404 from './pages/NotFound404.jsx'
+import SearchFriends from './pages/SearchFriends.jsx'
+
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <Routes>
       <Route path='/' element={<Home />} />
-      <Route path='/:username' element={<ProfileByUsername/>} />
-        <Route path='*' element={<NotFound404 />} />
+      <Route path='/:username' element={<ProfileByUsername />} />
+      <Route path='*' element={<NotFound404 />} />
+      <Route path='/friends' element={<SearchFriends />} />
     </Routes>
   )
 }

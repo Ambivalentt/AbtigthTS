@@ -31,9 +31,6 @@ const loginUser = async (req, res) => {
         const token = jsonwebtoken_1.default.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.cookie('access_token', token, {
             httpOnly: true,
-            secure: true, //cambiar true en producction
-            sameSite: "none", //si el front y el back son de diferentes dominios
-            path: '/'
         });
         res.status(201).json({ user, token: token });
     }
@@ -60,9 +57,6 @@ const logOut = async (_req, res) => {
     try {
         res.clearCookie('access_token', {
             httpOnly: true,
-            secure: true, //cambiar true en producction
-            sameSite: "none", //si el front y el back son de diferentes dominios
-            path: '/'
         });
         res.status(200).json({ message: 'Logged out successfully' });
     }

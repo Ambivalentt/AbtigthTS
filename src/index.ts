@@ -7,8 +7,8 @@ import 'dotenv/config';
 
 const app = express();
 app.use(cors({
-    origin: ['https://abrigth.netlify.app', 'https://abrigth.netlify.app/'], // Adjust the origin as needed
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    origin: 'http://localhost:5173', // Adjust the origin as needed
+    credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }))
 
 const PORT = process.env.PORT || 3000;

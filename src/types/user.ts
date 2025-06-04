@@ -31,3 +31,10 @@ export interface LoginBody{
 }
 
 
+export interface PublicUserType {
+  _id: Types.ObjectId;
+  username: string;
+  full_name: string;
+  bio?: string;
+  avatar_url?: string;
+}

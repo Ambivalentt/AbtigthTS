@@ -76,6 +76,15 @@ class UserRepo {
             throw handleError(error);
         }
     }
+    static async getAllUsers():Promise<Omit<UserType, 'password' | 'email' | 'created_at'>[]> {
+        try {
+            const users = await DBuser.find({}, '-password -email -created_at').lean() as Omit<UserType, 'password' | 'email' | 'created_at'>[];
+            if (!users || users.length === 0) throw new Error('No users found');
+            return users
+        } catch (error) {
+            throw handleError(error);
+        }
+    }
 }
 
 export default UserRepo;

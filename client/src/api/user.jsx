@@ -20,7 +20,7 @@ const loginUser = async (formData) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-           withCredentials: true
+            withCredentials: true
         });
         return response.data.user;
     } catch (error) {
@@ -30,7 +30,7 @@ const loginUser = async (formData) => {
 }
 const logOut = async () => {
     try {
-        const response = await axiosInstance.get('/user/logout',{
+        const response = await axiosInstance.get('/user/logout', {
             withCredentials: true
         })
         return response.data;
@@ -49,4 +49,15 @@ const getUserProfile = async (username) => {
         throw new Error(errorMessage.message || 'an unknown error occurred while fetching user profile');
     }
 }
-export { createUser, loginUser, logOut, getUserProfile };
+
+const getAllUsers = async () => {
+    try {
+        const response = await axiosInstance.get('/user/searchFriends');
+        return response.data;
+    } catch (error) {
+        console.error("Error searching users:", error);
+        const errorMessage = error.response?.data;
+        throw new Error(errorMessage.message || 'an unknown error occurred while searching users');
+    }
+}
+export { createUser, loginUser, logOut, getUserProfile, getAllUsers };

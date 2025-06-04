@@ -13,7 +13,7 @@ export default function RegisterModal({ onClose }) {
     password: "",
     email: "",
     avatar_url: null,
-    birthday: "",
+    birthdate: "",
   });
   const { setUser } = React.useContext(UserContext);
   const modalRef = useRef(null);
@@ -30,13 +30,13 @@ export default function RegisterModal({ onClose }) {
       setLoading(true);
       const formData = new FormData();
       formData.append("username", form.username);
-        formData.append("full_name", form.full_name);
+      formData.append("full_name", form.full_name);
       formData.append("password", form.password);
       formData.append("email", form.email);
       if (form.avatar_url) {
         formData.append("avatar_url", form.avatar_url);
       }
-      formData.append("birthday", form.birthday);
+      formData.append("birthdate", form.birthdate);
 
       const response = await createUser(formData);
       const loginResponse = await loginUser({
@@ -44,10 +44,10 @@ export default function RegisterModal({ onClose }) {
         password: form.password,
       });
       setUser(loginResponse);
-      console.log("User created successfully:", response);
       onClose()
     } catch (error) {
-      setError(error.message);
+      const errorMessage = error.message || "Error al registrarse";
+      setError(errorMessage);
     } finally {
       setLoading(null);
     }
@@ -75,7 +75,7 @@ export default function RegisterModal({ onClose }) {
   }, []);
 
   const handleClick = () => {
-      fileInputRef.current.click();
+    fileInputRef.current.click();
   };
 
   const handleFileChange = (event) => {
@@ -157,9 +157,8 @@ export default function RegisterModal({ onClose }) {
             type="button"
             onClick={handleClick}
             disabled={loading}
-            className={`w-full p-3 rounded-md bg-[#0e0e10] border border-[#2a2a2e] text-white flex flex-start flex-row items-center text-sm ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full p-3 rounded-md bg-[#0e0e10] border border-[#2a2a2e] text-white flex flex-start flex-row items-center text-sm ${loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
           >
             <span className="bg-[#2a2a2e] text-nowrap py-1 px-3 rounded-lg text-white hover:bg-[#1a1a1b]">
               Upload Avatar
@@ -170,8 +169,8 @@ export default function RegisterModal({ onClose }) {
           </button>
 
           <BirthdaySelector
-            value={form.birthday}
-            onChange={(date) => setForm({ ...form, birthday: date })}
+            value={form.birthdate}
+            onChange={(date) => setForm({ ...form, birthdate: date })}
             disabled={loading}
           />
 

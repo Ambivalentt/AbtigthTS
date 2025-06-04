@@ -5,7 +5,7 @@ export default function BirthdaySelector({ onChange, value, required = false }) 
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
     const [initialized, setInitialized] = useState(false);
-
+    const [error, setError] = useState("");
     const months = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
