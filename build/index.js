@@ -10,7 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: 'https://abrigth.netlify.app/', // Adjust the origin as needed
+    origin: 'https://abrigth.netlify.app', // Adjust the origin as needed
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
 app.use(express_1.default.json());
@@ -27,6 +27,6 @@ app.use((req, res) => {
     .catch((error) => {
     console.error('MongoDB connection error:', error);
 });
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
