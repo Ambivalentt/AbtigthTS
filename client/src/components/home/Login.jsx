@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { loginUser } from "../../api/user"; // Asegúrate de tener esta función en tu API
 import { UserContext } from "../../context/user";
-import { set } from "mongoose";
 
 
 export default function LoginModal({ onClose }) {

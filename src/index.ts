@@ -6,7 +6,7 @@ import cookies from 'cookie-parser';
 const app = express();
 
 app.use(cors({
-    origin: 'https://abrigth.netlify.app', // Adjust the origin as needed
+    origin: 'https://abrigth.netlify.app/', // Adjust the origin as needed
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }))
 app.use(express.json());
