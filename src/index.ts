@@ -4,6 +4,7 @@ import userRoutes from './routes/user';
 import cors from 'cors';
 import cookies from 'cookie-parser';
 const app = express();
+import 'dotenv/config';
 
 app.use(cors({
     origin: ['https://abrigth.netlify.app', 'https://abrigth.netlify.app/'], // Adjust the origin as needed
