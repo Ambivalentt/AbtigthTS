@@ -15,7 +15,7 @@ const authMiddleware = (req:ProfileRequest, res:Response, next:NextFunction) => 
         req.user = data as UserType; // Cast to UserType
         next();
     }catch(err){
-        res.status(401).json({error:'token expired or invalid'});
+        res.status(401).json({error:'token expired or invalid' + err});
     }
 }
 

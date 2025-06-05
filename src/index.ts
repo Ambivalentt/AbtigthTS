@@ -4,7 +4,7 @@ import userRoutes from './routes/user';
 import cors from 'cors';
 import cookies from 'cookie-parser';
 import 'dotenv/config';
-
+import friendShip from './routes/friendShip';
 const app = express();
 app.use(cors({
     origin: 'http://localhost:5173', // Adjust the origin as needed
@@ -17,7 +17,7 @@ app.use(express.json());
 
 
 app.use('/user', userRoutes);
-
+app.use('/friendship', friendShip);
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
 })

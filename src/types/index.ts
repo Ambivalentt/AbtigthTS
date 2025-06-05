@@ -22,8 +22,9 @@ export interface ProfileCommentType {
 
 export interface FriendshipType {
   _id?: Types.ObjectId;
-  user1_id: Types.ObjectId;
-  user2_id: Types.ObjectId;
+  requester_id: Types.ObjectId;
+  receiver_id: Types.ObjectId;
+  status: 'pending' | 'accepted' | 'rejected'; // estado de la solicitud
   created_at?: Date;
 }
 

@@ -1,15 +1,29 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createRequest } from "../../api/friendship.jsx";
 
-export default function BuscarAmigos({users}) {
+
+export default function BuscarAmigos({ users }) {
   const [search, setSearch] = useState("");
+  const [sentRequests, setSentRequests] = useState([]);
 
+  const navigate = useNavigate();
   const filteredUsers = users.filter((user) =>
     `${user.full_name} ${user.username}`.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAddFriend = (userId) => {
-    console.log(`Solicitud de amistad enviada a ID: ${userId}`);
-  };
+
+  const handleAddFriend = async (userId) => {
+  try {
+    const response = await createRequest(userId);
+    if (response.status === 201) {
+      setSentRequests((prev) => [...prev, userId]); // guardar ID como enviado
+    }
+  } catch (error) {
+    console.error("Error al enviar solicitud:", error);
+  }
+};
+
 
   return (
     <div className="w-full max-w-5xl mx-auto text-white p-6 sm:p-8">
@@ -31,6 +45,7 @@ export default function BuscarAmigos({users}) {
               className="flex flex-col items-center p-4 bg-[#1f1f23] rounded-2xl border border-[#2c2c30] hover:shadow-2xl transition-shadow duration-300"
             >
               <img
+                onClick={() => navigate(`/${user.username}`)}
                 src={user.avatar_url}
                 alt={`${user.full_Name} avatar`}
                 className="w-20 h-20 rounded-full object-cover border-2 border-cyan-500 shadow-md mb-4"
@@ -40,10 +55,16 @@ export default function BuscarAmigos({users}) {
               <p className="text-gray-400 mt-1 text-sm text-center">{user.bio || 'Sin biogafria'}</p>
               <button
                 onClick={() => handleAddFriend(user._id)}
-                className="mt-4 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl transition-colors w-full"
+                disabled={sentRequests.includes(user._id)}
+                className={`cursor-pointer mt-4 px-4 py-2 rounded-xl transition-colors w-full text-white ${sentRequests.includes(user._id)
+                    ? "bg-gray-500 pointer-events-none"
+                    : "bg-cyan-600 hover:bg-cyan-700"
+                  }`}
               >
-                Agregar amigo
+                {sentRequests.includes(user._id) ? "Solicitud enviada" : "Agregar amigo"}
               </button>
+
+
             </div>
           ))
         ) : (
