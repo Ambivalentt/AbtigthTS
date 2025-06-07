@@ -25,10 +25,7 @@ const SearchFriends = () => {
 
   return (
     <main className="bg-[#0e0e10] min-h-screen">
-      <header>
-        <Navbar />
-      </header>
-
+  
       <div className="pt-4 px-6 sm:px-10">
         {loading ? (
           <div className="flex justify-center items-center h-[60vh]">

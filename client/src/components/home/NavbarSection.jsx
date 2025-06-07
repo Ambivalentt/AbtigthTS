@@ -5,6 +5,9 @@ import { useStateContext } from "../../context/user.jsx";
 import { logOut } from '../../api/user.jsx';
 import LoginModal from "./Login.jsx";
 import RegisterModal from "./Register.jsx";
+import NotifyDropDown from "./navbar/NotifyDropdown.jsx"
+import { friendShipRequest } from "../../api/friendship.jsx";
+
 export default function Navbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
@@ -16,7 +19,7 @@ export default function Navbar() {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const navigate = useNavigate();
-    const notifications = ["Comentario nuevo", "Like en tu post"];
+    const [notifyLength, setNotifyLength] = useState(0);
     const messages = ["Mensaje de Juan", "Mensaje de Ana"];
 
     const handleClickOutside = (e) => {
@@ -45,8 +48,25 @@ export default function Navbar() {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
             document.removeEventListener("keydown", handleEscape);
-        };
+        }
     }, []);
+
+
+
+    useEffect(() => {
+        const notifyLength = async () => {
+            try {
+                const response = await friendShipRequest();
+                if (response && response.length > 0) {
+                    setNotifyLength(response.length);
+                }
+            } catch (error) {
+                console.error("Error al obtener notificaciones:", error);
+            }
+        }
+        notifyLength();
+    }, [])
+
 
     const handleLogOut = async () => {
         try {
@@ -62,20 +82,23 @@ export default function Navbar() {
 
     return (
         <nav className="w-full bg-[#0e0e10] text-white border-b border-[#2a2a2e] shadow-sm px-4 py-3 flex items-center justify-between">
-            <Link to="/" className="text-5xl w-12 font-bold text-cyan-400">A</Link>
+            <Link to="/" className="text-5xl w-12 sm:w-17 md:w-36 font-bold text-cyan-400">A</Link>
 
             {user ? (
                 <>
-                    <div className="flex gap-6 lg:gap-x-15 items-center">
+                    <div className="flex gap-6 lg:gap-x-15 pt-2 items-center">
                         <Link to="/" className="hover:text-cyan-400 sm:block hidden">
                             <Home className="w-8 h-8" />
                         </Link>
                         <Link to="/friends" className="hover:text-cyan-400 sm:block hidden">
                             <Users className="w-8 h-8" />
                         </Link>
+                    </div>
 
-                        {/* Mensajes */}
-                        <div className="relative" ref={msgRef}>
+                    {/* Avatar, Mensajes, notificaciones de usuario */}
+                    {/* bandeja ed mensajes */}
+                    <div className="flex items-center gap-x-4">
+                        <div className="relative pt-2 " ref={msgRef} >
                             <button
                                 onClick={() => {
                                     setMsgOpen(!msgOpen);
@@ -84,7 +107,7 @@ export default function Navbar() {
                                 }}
                                 className="relative hover:text-cyan-400"
                             >
-                                <MessageCircle className="w-8 h-8" />
+                                <MessageCircle className="w-8 h-8 cursor-pointer" />
                                 {messages.length > 0 && (
                                     <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
                                         {messages.length}
@@ -101,7 +124,6 @@ export default function Navbar() {
                                 </div>
                             )}
                         </div>
-
                         {/* Notificaciones */}
                         <div className="relative" ref={notifRef}>
                             <button
@@ -110,29 +132,30 @@ export default function Navbar() {
                                     setMsgOpen(false);
                                     setDropdownOpen(false);
                                 }}
-                                className="relative hover:text-cyan-400"
+                                className="relative pt-2 hover:text-cyan-400"
                             >
-                                <Bell className="w-8 h-8" />
-                                {notifications.length > 0 && (
-                                    <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
-                                        {notifications.length}
+                                <Bell className="w-8 h-8 cursor-pointer" />
+                                {notifyLength > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full font-bold px-1">
+                                        {notifyLength}
                                     </span>
                                 )}
                             </button>
                             {notifOpen && (
-                                <div className="absolute -right-24 md:right-0 mt-2 w-64 bg-[#1a1a1d] border border-[#2a2a2e] rounded-xl shadow-lg py-2 z-50">
-                                    {notifications.map((notif, index) => (
-                                        <div key={index} className="px-4 py-2 hover:bg-[#2a2a2e] text-sm">
-                                            {notif}
+                                notifyLength > 0 ? (
+                                    <NotifyDropDown setNotifyLength={setNotifyLength} />
+                                ) : (
+                                    <div className="absolute right-0 mt-2 w-96 bg-[#1f1f23] border border-[#2c2c30] rounded-xl shadow-xl z-50 overflow-hidden">
+                                        <div className="px-4 py-3 border-b border-[#2c2c30] text-cyan-400 font-semibold text-lg">
+                                            Notificaciones
                                         </div>
-                                    ))}
-                                </div>
+                                        <div className="px-4 py-3 text-gray-400 text-sm">
+                                            No tienes notificaciones nuevas.
+                                        </div>
+                                    </div>
+                                )
                             )}
                         </div>
-                    </div>
-
-                    {/* Avatar y menú de usuario */}
-                    <div className="flex items-center gap-4">
                         <div className="relative" ref={dropdownRef}>
                             <button
                                 onClick={() => {
@@ -145,7 +168,7 @@ export default function Navbar() {
                                 <img
                                     src={user.avatar_url}
                                     alt="Avatar"
-                                    className="w-full h-full rounded-full object-cover border-2 border-gray-600"
+                                    className="w-full h-full cursor-pointer rounded-full object-cover border-2 border-gray-600"
                                 />
                             </button>
                             {dropdownOpen && (
@@ -154,7 +177,7 @@ export default function Navbar() {
                                         {`/${user.username}`}
                                         className="flex items-center gap-2 px-4 py-2 hover:bg-[#2a2a2e]"
                                         onClick={() => setDropdownOpen(false)}
-                                        >
+                                    >
                                         <User className="w-4 h-4" /> Mi perfil
                                     </Link>
                                     <Link to="/friends" className="flex items-center gap-2 px-4 py-2 hover:bg-[#2a2a2e]">

@@ -13,5 +13,6 @@ router.post('/register', upload.single('avatar_url'), user_1.createUser);
 router.post('/login', user_1.loginUser);
 router.get('/profile', authMiddleware_1.default, user_1.userDetails);
 router.get('/logout', user_1.logOut);
+router.get('/searchFriends', user_1.getAllUsers);
 router.get('/:username', user_1.getUserByUsername);
 exports.default = router;

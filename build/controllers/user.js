@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByUsername = exports.logOut = exports.userDetails = exports.loginUser = exports.createUser = void 0;
+exports.getAllUsers = exports.getUserByUsername = exports.logOut = exports.userDetails = exports.loginUser = exports.createUser = void 0;
 require("dotenv/config");
 const user_1 = __importDefault(require("../repositories/user"));
 const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
@@ -76,3 +76,13 @@ const getUserByUsername = async (req, res) => {
     }
 };
 exports.getUserByUsername = getUserByUsername;
+const getAllUsers = async (_req, res) => {
+    try {
+        const users = await user_1.default.getAllUsers();
+        res.status(200).json(users);
+    }
+    catch (error) {
+        res.status(400).json({ message: (0, errorHandler_1.default)(error).message });
+    }
+};
+exports.getAllUsers = getAllUsers;

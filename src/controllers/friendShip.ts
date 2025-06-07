@@ -19,17 +19,50 @@ const createFriendShip = async (req: FriendRequestFn, res: Response): Promise<vo
     }
 }
 
-const friendShipRelation = async (req: FriendRequestFn, res: Response): Promise<void> => {
-    try{
+const getRelationShipById = async (req: FriendRequestFn, res: Response): Promise<void> => {
+    try {
         const id = req.user?._id;
         if (!id) {
             res.status(401).json({ message: 'Unauthorized' });
             return;
         }
-        const results = await FriendRequestRepo.findByRelationId(id)
+        const results = await FriendRequestRepo.relationShipById(id);
         res.status(200).json(results);
-    }catch(error) {
+    } catch (error) {
         res.status(400).json({ message: errorHandler(error).message });
     }
 }
-export  {createFriendShip, friendShipRelation}
+
+const friendShipRelation = async (req: FriendRequestFn, res: Response): Promise<void> => {
+    try {
+        const id = req.user?._id;
+        if (!id) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+        const results = await FriendRequestRepo.friendShipRequest(id)
+        res.status(200).json(results);
+    } catch (error) {
+        res.status(400).json({ message: errorHandler(error).message });
+    }
+}
+
+const acceptFriendRequest = async (req: FriendRequestFn, res: Response): Promise<void> => {
+    try {
+        const request_id = req.body.request_id
+        if (!request_id) {
+            res.status(400).json({ message: 'Request ID is required' });
+            return;
+        }
+        const id = req.user?._id;
+        if (!id) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+        const friendship = await FriendRequestRepo.acceptFriendship(id, request_id);
+        res.status(200).json(friendship);
+    } catch (error) {
+        res.status(400).json({ message: errorHandler(error).message });
+    }
+}
+export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest }

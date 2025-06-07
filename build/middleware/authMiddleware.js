@@ -17,7 +17,7 @@ const authMiddleware = (req, res, next) => {
         next();
     }
     catch (err) {
-        res.status(401).json({ error: 'token expired or invalid' });
+        res.status(401).json({ error: 'token expired or invalid' + err });
     }
 };
 exports.default = authMiddleware;

@@ -6,24 +6,28 @@ export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-
-     const fetchUser = async () => {
-            try {
-                const response = await axiosInstance.get('/user/profile',{
-                    withCredentials: true
-                });
-                setUser(response.data);
-            } catch (error) {
-              throw new Error('Failed to fetch user profile');
-            }
-        };
+     const [loading, setLoading] = useState(true);
+    const fetchUser = async () => {
+        try {
+            const response = await axiosInstance.get('/user/profile', {
+                withCredentials: true
+            });
+           
+            setUser(response.data);
+              setLoading(false);
+        } catch (error) {
+            throw new Error('No user found');
+        }finally{
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-       fetchUser();
+        fetchUser();
     }, []);
 
-    return(
-        <UserContext.Provider value={{user, setUser}}>
+    return (
+        <UserContext.Provider value={{ user, setUser, loading }}>
             {children}
         </UserContext.Provider>
     )

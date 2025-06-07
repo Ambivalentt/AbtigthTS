@@ -48,9 +48,6 @@ const MyProfile = () => {
 
     return (
         <main className="bg-[#0e0e10] min-h-screen ">
-            <header>
-                <Navbar />
-            </header>
             {loading ? (
                <main className="pt-4">
                  <LoadingProfile />
