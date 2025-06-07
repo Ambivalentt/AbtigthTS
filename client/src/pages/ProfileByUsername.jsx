@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import LoadingProfile from "../components/home/LoadingProfile";
 import NotFound404 from "./NotFound404";
 import Navbar from "../components/home/NavbarSection.jsx";
-import OwnerProfile from "../components/home/OwnerProfile.jsx";
+import OwnerProfile from "../components/OwnerProfile/OwnerProfile.jsx";
 import { useStateContext } from "../context/user.jsx";
 
 

@@ -53,7 +53,7 @@ export default function LoginModal({ onClose }) {
   }, []);
 
   return (
-    <div className="fixed inset-0  bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
       <div
         ref={modalRef}
         className="bg-[#1a1a1d] p-8 rounded-2xl max-w-md w-full border border-[#2a2a2e] shadow-lg"
