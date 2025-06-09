@@ -6,28 +6,39 @@ export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-     const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const fetchUser = async () => {
         try {
             const response = await axiosInstance.get('/user/profile', {
                 withCredentials: true
             });
-           
+
             setUser(response.data);
-              setLoading(false);
+            setLoading(false);
         } catch (error) {
             throw new Error('No user found');
-        }finally{
+        } finally {
             setLoading(false);
         }
     };
 
+    const getAllFriendsByUser = async () => {
+        try {
+            const response = await axiosInstance.get(`friendship/allFriendsByUser`, {
+                withCredentials: true
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching all friends:", error);
+            throw error.message;
+        }
+    }
     useEffect(() => {
         fetchUser();
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, setUser, loading }}>
+        <UserContext.Provider value={{ user, setUser, loading, getAllFriendsByUser }}>
             {children}
         </UserContext.Provider>
     )

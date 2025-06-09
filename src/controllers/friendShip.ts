@@ -65,4 +65,18 @@ const acceptFriendRequest = async (req: FriendRequestFn, res: Response): Promise
         res.status(400).json({ message: errorHandler(error).message });
     }
 }
-export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest }
+
+const getAllFriendByUserId = async (req :FriendRequestFn, res:Response) :Promise<void> =>{
+    try {
+        const userId = req.user?._id;
+        if (!userId) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+        const friendships = await FriendRequestRepo.getFriendshipById(userId);
+        res.status(200).json(friendships);
+    } catch (error) {
+        res.status(400).json({ message: errorHandler(error).message });
+    }
+}
+export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest, getAllFriendByUserId }

@@ -32,6 +32,7 @@ export interface ConversationType {
   _id?: Types.ObjectId;
   members: Types.ObjectId[];     // IDs de los usuarios
   created_at?: Date;
+  other_user_id?: Types.ObjectId; // ID del otro usuario en la conversación
 }
 
 export interface MessageType {

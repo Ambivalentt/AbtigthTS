@@ -1,15 +1,17 @@
 import { Types } from 'mongoose';
+import { Request } from 'express';
+import { UserType } from './user';
+import { Interface } from 'readline';
+import { MessageType } from './index';
+import {ConversationType} from './index';
+               
 
-export interface ConversationType {
-  _id?: Types.ObjectId;
-  members: Types.ObjectId[];
-  created_at?: Date;
+//Request<Params, ResponseBody, RequestBody, Query>
+export interface RequestConversationBody extends Request<{}, {}, ConversationType , {}> {
+  user?: UserType; // El usuario autenticado
 }
 
-export interface MessageType {
-  _id?: Types.ObjectId;
-  conversation_id: Types.ObjectId;
-  sender_id: Types.ObjectId;
-  text: string;
-  timestamp?: Date;
+
+export interface MessageRequest extends Request<{}, {}, MessageType, {}> {
+  user?: UserType; // El usuario autenticado
 }

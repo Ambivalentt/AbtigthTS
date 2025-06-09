@@ -51,4 +51,5 @@ const acceptFriendshipRequest = async (requestId) => {
     }
 }
 
+
 export { createRequest, allRequestsendedByUser, friendShipRequest, acceptFriendshipRequest };

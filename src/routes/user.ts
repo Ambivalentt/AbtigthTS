@@ -1,7 +1,7 @@
 import { createUser, loginUser, userDetails, logOut, getUserByUsername, getAllUsers } from '../controllers/user';
 import express from 'express';
 import multer from 'multer';
-import authMiddleware from '../middleware/authMiddleware';
+import {authMiddleware} from '../middleware/authMiddleware';
 const upload = multer()
 const router = express.Router();
 

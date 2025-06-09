@@ -7,7 +7,7 @@ import LoginModal from "./Login.jsx";
 import RegisterModal from "./Register.jsx";
 import NotifyDropDown from "./navbar/NotifyDropdown.jsx"
 import { friendShipRequest } from "../../api/friendship.jsx";
-
+import ChatBox from "../../pages/ChatBox.jsx";
 export default function Navbar() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notifOpen, setNotifOpen] = useState(false);
@@ -81,6 +81,7 @@ export default function Navbar() {
     };
 
     return (
+        <>
         <nav className="w-full bg-[#0e0e10] text-white border-b border-[#2a2a2e] shadow-sm px-4 py-3 flex items-center justify-between">
             <Link to="/" className="text-5xl w-12 sm:w-17 md:w-36 font-bold text-cyan-400">A</Link>
 
@@ -221,5 +222,9 @@ export default function Navbar() {
                 </>
             )}
         </nav>
+        {user && (
+            <ChatBox />
+        )}
+        </>
     );
 }

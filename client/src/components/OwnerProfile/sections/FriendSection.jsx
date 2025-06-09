@@ -1,25 +1,39 @@
-const friends = [
-  { id: 1, name: "Pedro González", avatar: "https://i.pravatar.cc/40?img=4" },
-  { id: 2, name: "Lucía Ramírez", avatar: "https://i.pravatar.cc/40?img=5" },
-  { id: 3, name: "Santiago Ruiz", avatar: "https://i.pravatar.cc/40?img=6" },
-];
-
-const FriendsSection = () => (
-  <div className="mt-10">
-    <h3 className="text-xl font-bold mb-4 text-cyan-400">Amigos</h3>
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-      {friends.map((friend) => (
-        <div key={friend.id} className="flex items-center gap-3 bg-[#1f1f23] p-3 rounded-xl border border-[#2c2c30]">
-          <img
-            src={friend.avatar}
-            alt={friend.name}
-            className="w-10 h-10 rounded-full object-cover border border-gray-600"
-          />
-          <span className="text-white">{friend.name}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-);
+const FriendsSection = ({ friends }) => {
+  return (
+    <section className="mt-10">
+      <h3 className="text-3xl font-bold mb-8 text-cyan-400">Amigos</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+        {friends.map((friend) => (
+          <div
+            key={friend._id}
+            className="flex items-start gap-5 p-5 bg-[#1b1b1f] rounded-2xl border border-[#2b2b30] hover:border-cyan-500 transition-all duration-300 shadow-md hover:shadow-cyan-600/10"
+          >
+            <img
+              src={friend.avatar_url}
+              alt={friend.full_name}
+              className="w-24 h-24 object-cover rounded-xl border border-gray-700"
+            />
+            <div className="flex flex-col justify-between flex-grow">
+              <div>
+                <h4 className="text-2xl font-semibold text-white leading-snug">{friend.full_name}</h4>
+                <p className="text-cyan-400 text-sm mb-2">@{friend.username}</p>
+              </div>
+              <div className="text-sm text-gray-300 mb-1">
+                {friend.bio ? (
+                  <p className="line-clamp-2 italic">{friend.bio}</p>
+                ) : (
+                  <p className="italic text-gray-500">Sin biografía</p>
+                )}
+              </div>
+              <div className="text-sm text-gray-500">
+                <span className="font-medium text-white">Email:</span> {friend.email}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export default FriendsSection;
