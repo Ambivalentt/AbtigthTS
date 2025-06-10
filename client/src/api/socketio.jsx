@@ -1,11 +1,12 @@
 import axiosInstance from "./axiosInstanced";
 import { io } from "socket.io-client";
+
 const createConversation = async (receiver_id) => {
     console.log("Creating conversation with receiver_id:", receiver_id);
     try {
         const response = await axiosInstance.post('conversation/create',
             { other_user_id: receiver_id }
-            ,{
+            , {
                 withCredentials: true
             });
         return response.data;
@@ -57,6 +58,9 @@ const getMessages = async (conversationId) => {
     }
 }
 
-const socketapi = io('http://localhost:3000', { withCredentials: true });
-
+const socketapi = io('http://localhost:3000',
+    {
+        withCredentials: true,
+        transports: ['websocket']
+    });
 export { createConversation, getConversations, sendMessage, getMessages, socketapi };

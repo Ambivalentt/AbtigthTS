@@ -5,7 +5,7 @@ import { ProfileRequest } from '../types/user';
 import { UserType } from '../types';
 import { AuthenticatedSocket, SocketIOAuthMiddleware } from '../types/socketio';
 import { Server, Socket } from 'socket.io';
-
+import * as cookie from 'cookie';
 const authMiddleware = (req: ProfileRequest, res: Response, next: NextFunction) => {
     const token = req.cookies.access_token;
     if (!token) {
@@ -21,11 +21,17 @@ const authMiddleware = (req: ProfileRequest, res: Response, next: NextFunction) 
     }
 }
 
-const onlineUsers = new Map<string, string>(); // userId -> socketId
-
+const onlineUsers = new Map<string, Set<string>>();
 const socketAuthMiddleware: SocketIOAuthMiddleware = (io) => {
     io.use((socket, next) => {
-        const token = socket.handshake.auth.token;
+        // 1. Intenta leer el token del handshake.auth (por compatibilidad)
+        let token = socket.handshake.auth?.token;
+        // 2. Si no viene en auth, intenta leerlo de las cookies
+        if (!token && socket.handshake.headers.cookie) {
+            const cookies = cookie.parse(socket.handshake.headers.cookie);
+            token = cookies.access_token;
+        }
+
         if (!token) {
             return next(new Error("No token IO provided"));
         }
@@ -38,43 +44,55 @@ const socketAuthMiddleware: SocketIOAuthMiddleware = (io) => {
             next(new Error("Invalid token"));
         }
     });
-}
-
+};
 const setupSocket = (io: Server) => {
     io.on("connection", (socket: Socket & { userId?: string }) => {
         const userId = socket.userId;
+
         if (!userId) {
             console.log("Conexión sin userId, desconectando socket:", socket.id);
             socket.disconnect();
             return;
         }
+        // Añadir socketId al set del usuario
+        if (!onlineUsers.has(userId)) {
+            onlineUsers.set(userId, new Set());
+        }
+        onlineUsers.get(userId)!.add(socket.id);
+        // Envía la lista de usuarios online al usuario que se acaba de conectar
 
-        onlineUsers.set(userId, socket.id);
-        console.log("Usuario conectado:", userId, socket.id);
-
-        // Notificar a otros usuarios que este usuario está online
-        socket.broadcast.emit("user_online", userId);
+        socket.on("get_online_users", () => {
+            socket.emit("online_users", Array.from(onlineUsers.keys()));
+        });
+        socket.emit("online_users", Array.from(onlineUsers.keys()));
+        if (onlineUsers.get(userId)!.size === 1) {
+            socket.broadcast.emit("user_online", userId);
+        }
 
         socket.on("send_message", async (data) => {
-            const receiverSocketId = onlineUsers.get(data.receiverId);
-              console.log("Mensaje para enviar a socket id:", receiverSocketId, "datos:", data);
-  
+            const receiverSockets = onlineUsers.get(data.receiverId);
             const senderSocketId = socket.id;
 
-            if (receiverSocketId) {
-                io.to(receiverSocketId).emit("receive_message", data);
+            // Enviar a todos los sockets del receptor
+            if (receiverSockets) {
+                receiverSockets.forEach(sid => {
+                    io.to(sid).emit("receive_message", data);
+                });
             }
             // También emitir al emisor para que reciba el mensaje via socket
             io.to(senderSocketId).emit("receive_message", data);
         });
 
-
         socket.on("disconnect", () => {
-            console.log("Usuario desconectado:", userId, socket.id);
-            onlineUsers.delete(userId);
-
-            // Notificar a otros usuarios que este usuario está offline
-            socket.broadcast.emit("user_offline", userId);
+            const userSockets = onlineUsers.get(userId);
+            if (userSockets) {
+                userSockets.delete(socket.id);
+                if (userSockets.size === 0) {
+                    onlineUsers.delete(userId);
+                    // Notificar a otros usuarios que este usuario está offline
+                    socket.broadcast.emit("user_offline", userId);
+                }
+            }
         });
     });
 };

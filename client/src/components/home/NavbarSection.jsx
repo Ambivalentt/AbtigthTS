@@ -15,7 +15,7 @@ export default function Navbar() {
     const dropdownRef = useRef(null);
     const notifRef = useRef(null);
     const msgRef = useRef(null);
-    const { user, setUser } = useStateContext();
+    const { user, setUser, loading, getAllFriendsByUser } = useStateContext();
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
     const navigate = useNavigate();
@@ -222,8 +222,8 @@ export default function Navbar() {
                 </>
             )}
         </nav>
-        {user && (
-            <ChatBox />
+        {!loading && user && (
+            <ChatBox user={user} getAllFriendsByUser={getAllFriendsByUser}/>
         )}
         </>
     );

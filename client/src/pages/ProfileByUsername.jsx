@@ -38,7 +38,6 @@ const MyProfile = () => {
     useEffect(() => {
         setLoading(true);
         fetchUserProfile();
-        console.log("Fetching user profile for:", username);
     }, [username]);
 
     if (userFound === false) {

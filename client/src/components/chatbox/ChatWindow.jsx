@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, memo } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import MessageInput from "./MessageInput.jsx";
 
@@ -10,7 +10,6 @@ function ChatWindow({ conversation, messages, currentUserId, onBack, onSend }) {
   const [isActive, setIsActive] = useState(false);
 
   const friend = conversation?.members?.find((m) => m._id !== currentUserId);
-console.log("🔁 ChatWindow render - mensajes:", messages.length);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

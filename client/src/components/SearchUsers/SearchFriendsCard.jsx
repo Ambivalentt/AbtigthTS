@@ -15,7 +15,6 @@ export default function BuscarAmigos({ users }) {
       try {
         const response = await allRequestsendedByUser(); // debe devolver [{ receiver_id, status }]
         setSentRequests(response || []); // Filtrar solicitudes enviadas al usuario actual
-        console.log("Sent requests:", response, );
       } catch (error) {
         console.error("Error fetching sent requests:", error);
       }

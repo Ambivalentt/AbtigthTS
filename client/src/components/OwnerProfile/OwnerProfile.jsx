@@ -35,10 +35,6 @@ const ShowDetails = ({ userProfile }) => {
     getFriendsSection()
   }, [])
 
-  useEffect(() => {
-    console.log("Friends fetched:", friends);
-  }, [friends])
-
   return (
     <div className="w-full max-w-6xl mx-auto bg-[#131316] text-white p-6 sm:p-8 rounded-2xl border border-[#2c2c30] shadow-2xl mt-6 relative">
       <ProfileHeader user={editedProfile} onEditClick={() => setIsModalOpen(true)} />
