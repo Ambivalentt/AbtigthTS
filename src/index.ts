@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: 'https://abrigth.netlify.app',
+        origin: ['https://abrigth.netlify.app', 'https://abrigth.netlify.app/'],
         credentials: true,
     },
 });
