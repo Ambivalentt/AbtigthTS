@@ -15,7 +15,7 @@ import { Server } from 'socket.io'
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173', // Adjust the origin as needed
+    origin: ['https://abrigth.netlify.app/', 'https://abrigth.netlify.app'], // Adjust the origin as needed
     credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }))
 
@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: "https://abrigth.netlify.app/",
         credentials: true,
     },
 });
