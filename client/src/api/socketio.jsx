@@ -58,7 +58,7 @@ const getMessages = async (conversationId) => {
     }
 }
 
-const socketapi = io('http://localhost:3000',
+const socketapi = io('https://abrigth.netlify.app',
     {
         withCredentials: true,
         transports: ['websocket']
