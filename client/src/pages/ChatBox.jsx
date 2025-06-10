@@ -28,7 +28,7 @@ export default function ChatBox({ user, getAllFriendsByUser }) {
 
   // Inicializa el socket solo una vez
   useEffect(() => {
-    socketRef.current = io('https://abrigth.netlify.app', {
+    socketRef.current = io('https://abtigthts-production.up.railway.app', {
       withCredentials: true,
       transports: ['websocket']
     });

@@ -58,7 +58,7 @@ const getMessages = async (conversationId) => {
     }
 }
 
-const socketapi = io('https://abrigth.netlify.app',
+const socketapi = io('https://abtigthts-production.up.railway.app',
     {
         withCredentials: true,
         transports: ['websocket']
