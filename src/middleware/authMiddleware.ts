@@ -6,6 +6,8 @@ import { UserType } from '../types';
 import { AuthenticatedSocket, SocketIOAuthMiddleware } from '../types/socketio';
 import { Server, Socket } from 'socket.io';
 import * as cookie from 'cookie';
+
+// Middleware para rutas protegidas verificado 
 const authMiddleware = (req: ProfileRequest, res: Response, next: NextFunction) => {
     const token = req.cookies.access_token;
     if (!token) {
@@ -14,14 +16,17 @@ const authMiddleware = (req: ProfileRequest, res: Response, next: NextFunction) 
     }
     try {
         const data = jwt.verify(token, process.env.JWT_SECRET as string)
-        req.user = data as UserType; // Cast to UserType
+        req.user = data as UserType
         next();
     } catch (err) {
         res.status(401).json({ error: 'token expired or invalid' + err });
     }
 }
+///////////////////////////////////////////////////////
+// Middleware para sockets.io
 
 const onlineUsers = new Map<string, Set<string>>();
+
 const socketAuthMiddleware: SocketIOAuthMiddleware = (io) => {
     io.use((socket, next) => {
         // 1. Intenta leer el token del handshake.auth (por compatibilidad)
@@ -96,4 +101,5 @@ const setupSocket = (io: Server) => {
         });
     });
 };
+//
 export { authMiddleware, socketAuthMiddleware, setupSocket };

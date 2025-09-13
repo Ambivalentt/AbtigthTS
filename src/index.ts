@@ -7,7 +7,10 @@ import 'dotenv/config';
 import friendShip from './routes/friendShip';
 import message from './routes/message';
 import conversation from './routes/conversation';
+import posts from './routes/posts';
+
 import http from 'http';
+
 import { socketAuthMiddleware, setupSocket } from './middleware/authMiddleware';
 
 import { Server } from 'socket.io'
@@ -15,7 +18,7 @@ import { Server } from 'socket.io'
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173', // Adjust the origin as needed
+    origin: ['http://localhost:5173/', 'http://localhost:5173'], // Adjust the origin as needed
     credentials: true // Allow credentials (cookies, authorization headers, etc.)
 }))
 
@@ -23,7 +26,7 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: ['http://localhost:5173/', 'http://localhost:5173'],
         credentials: true,
     },
 });
@@ -39,6 +42,7 @@ app.use('/user', userRoutes);
 app.use('/friendship', friendShip);
 app.use('/message', message);
 app.use('/conversation', conversation);
+app.use('/posts', posts);
 
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });

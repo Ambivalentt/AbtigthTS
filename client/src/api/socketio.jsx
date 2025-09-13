@@ -58,7 +58,7 @@ const getMessages = async (conversationId) => {
     }
 }
 
-const socketapi = io('http://localhost:3000',
+const socketapi = io('http://localhost:3000/',
     {
         withCredentials: true,
         transports: ['websocket']
