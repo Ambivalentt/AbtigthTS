@@ -7,6 +7,8 @@ export default function PostCreator({ user, posts, content }) {
     const [text, setText] = useState("");
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [error, setError] = useState(null);
+    const [visible, setVisible] = useState(false);
 
     const [postForm, setPostForm] = useState({
         idPost: nanoid(),
@@ -32,6 +34,17 @@ export default function PostCreator({ user, posts, content }) {
 
 
     const handlePost = async () => {
+        if (text.trim() === "") {
+            setError("El contenido no puede estar vacío.");
+            setVisible(false);
+            setTimeout(() => setVisible(true), 100);
+            setTimeout(() => {
+                setVisible(false);
+                setTimeout(() => setError(null), 600);
+            }, 2000);
+            return;
+        }
+
         const updatedPost = {
             ...postForm,
             content: text,
@@ -64,7 +77,7 @@ export default function PostCreator({ user, posts, content }) {
                             />
 
                         </section>
-                        <section className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-3 gap-2">
+                        <section className="flex relative flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-3 gap-2">
                             <label className="flex items-center gap-2 text-cyan-400 cursor-pointer text-sm">
                                 <Image className="w-5 h-5" />
                                 <span>Foto</span>
@@ -83,6 +96,16 @@ export default function PostCreator({ user, posts, content }) {
                                 <Send className="w-4 h-4" />
                                 Publicar
                             </button>
+
+                            {error && (
+                                <p className={`
+                                    absolute right-0 text-sm text-red-500
+                                 transition-all duration-300 ease-in-out -bottom-2
+                                  ${visible ? "opacity-100 translate-y-8" : "opacity-0 translate-y-4"}
+                                `}>
+                                    {error}
+                                </p>
+                            )}
                         </section>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { FriendRequestFn } from '../types/friendRequest';
+import { FriendRequestFn, FriendsByUsernameParams } from '../types/friendRequest';
 import FriendRequestRepo from '../repositories/friendship';
 import errorHandler from '../utils/errorHandler';
 
@@ -66,17 +66,16 @@ const acceptFriendRequest = async (req: FriendRequestFn, res: Response): Promise
     }
 }
 
-const getAllFriendByUserId = async (req :FriendRequestFn, res:Response) :Promise<void> =>{
+const getAllFriendByUserId = async (req: FriendsByUsernameParams, res: Response): Promise<void> => {
     try {
-        const userId = req.user?._id;
-        if (!userId) {
-            res.status(401).json({ message: 'Unauthorized' });
-            return;
-        }
-        const friendships = await FriendRequestRepo.getFriendshipById(userId);
+        const { username } = req.params;
+
+        const friendships = await FriendRequestRepo.getFriendshipById(username);
         res.status(200).json(friendships);
     } catch (error) {
         res.status(400).json({ message: errorHandler(error).message });
     }
 }
+
+
 export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest, getAllFriendByUserId }

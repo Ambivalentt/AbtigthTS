@@ -1,7 +1,11 @@
 import { Users, Calendar, Mail, User, MessageCircle } from "lucide-react";
 import LoadingProfile from "./LoadingProfile.jsx";
+import { useEffect, useState } from "react";
+import { useStateContext } from "../../context/user.jsx";
+import FriendsSection from "../OwnerProfile/sections/FriendSection.jsx";
 
-const ShowDetails = ({ userProfile }) => {
+const ShowDetails = ({ userProfile, friends, friendsLoading }) => {
+
 
     const { avatar_url, full_name, username, birthdate, email } = userProfile;
 
@@ -41,7 +45,6 @@ const ShowDetails = ({ userProfile }) => {
                     <p className="text-cyan-400 text-lg">@{username}</p>
                 </div>
             </div>
-
             {/* Info */}
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-base sm:text-lg">
                 <div className="flex items-center gap-3 bg-[#1f1f23] p-4 rounded-xl border border-[#2c2c30]">
@@ -58,10 +61,18 @@ const ShowDetails = ({ userProfile }) => {
                 </div>
                 <div className="flex items-center gap-3 bg-[#1f1f23] p-4 rounded-xl border border-[#2c2c30]">
                     <Users className="w-6 h-6 text-cyan-400" />
-                    <span>23 amigos</span>
+                    {friends ? (
+                        <span>Amigos: {friends.length}</span>
+                    ) : (<span>No se encontro amigos</span>)}
                 </div>
             </div>
-
+            {friendsLoading ? (
+                <div className="text-center mt-10 text-gray-500">Cargando amigos...</div>
+            ) : friends && friends.length > 0 ? (
+                <FriendsSection friends={friends} />
+            ) : (
+                <div className="text-center mt-10 text-gray-500">No tienes amigos todavía.</div>
+            )}
             {/* Comentarios */}
             <div className="mt-10">
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">

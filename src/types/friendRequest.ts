@@ -9,9 +9,17 @@ export interface FriendRequestBody {
 }
                    
 //Request<Params, ResponseBody, RequestBody, Query>
-export interface FriendRequestFn extends Request<{}, {}, FriendRequestBody> {
+export interface FriendUsernameParams {
+    username: string;
+}
+
+export interface FriendRequestFn extends Request< {}, {}, FriendRequestBody> {
     user?: UserType,
     
+}
+
+export interface FriendsByUsernameParams extends Request<FriendUsernameParams, {}, {}>{
+    user?: UserType,
 }
 
 export type FriendShipWithUser = FriendshipType & {
