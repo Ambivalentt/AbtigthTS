@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { Image, Send } from "lucide-react";
+import { nanoid } from "nanoid";
 
-export default function PostCreator() {
+export default function PostCreator({ user, posts, content }) {
+    const { avatar_url, full_name } = user;
     const [text, setText] = useState("");
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [error, setError] = useState(null);
+    const [visible, setVisible] = useState(false);
 
-    // 🔹 Post simulado para vista previa
-    const mockPost = {
-        avatar: "https://i.pravatar.cc/300",
-        username: "Juan Pérez",
-        text: "¡Hoy fue un gran día para entrenar piernas! 💪🔥",
-        image:
-            "https://images.unsplash.com/photo-1594737625785-c92a050c2235?auto=format&fit=crop&w=800&q=80",
-    };
+    const [postForm, setPostForm] = useState({
+        idPost: nanoid(),
+        content: "",
+        createdAt: null,
+        userInfo: {
+            full_name: full_name,
+            avatar_url: avatar_url
+        }
+    });
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -27,78 +32,117 @@ export default function PostCreator() {
         }
     };
 
-    const handlePost = () => {
-        // Simulación de publicación
+
+    const handlePost = async () => {
+        if (text.trim() === "") {
+            setError("El contenido no puede estar vacío.");
+            setVisible(false);
+            setTimeout(() => setVisible(true), 100);
+            setTimeout(() => {
+                setVisible(false);
+                setTimeout(() => setError(null), 600);
+            }, 2000);
+            return;
+        }
+
+        const updatedPost = {
+            ...postForm,
+            content: text,
+        };
+        setPostForm(updatedPost);
+        await content(updatedPost);
         setText("");
         setImage(null);
         setPreview(null);
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto bg-[#1a1a1d] border border-[#2a2a2e] rounded-xl p-4 shadow-md text-white">
-            {/* Área de creación de post */}
-            <div className="flex items-start gap-3">
-                <img
-                    src="https://i.pravatar.cc/300"
-                    alt="Avatar"
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-gray-600"
-                />
-                <div className="flex-1">
-                    <textarea
-                        className="w-full bg-transparent border-none resize-none outline-none text-white placeholder-gray-400 text-sm sm:text-base"
-                        rows={3}
-                        placeholder="¿Qué estás pensando?"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                    />
-                    {preview && (
-                        <img
-                            src={preview}
-                            alt="preview"
-                            className="mt-2 w-full max-h-64 object-cover rounded-lg border border-gray-600"
-                        />
-                    )}
-                    <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-3 gap-2">
-                        <label className="flex items-center gap-2 text-cyan-400 cursor-pointer text-sm">
-                            <Image className="w-5 h-5" />
-                            <span>Foto</span>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                className="hidden"
+        <section className="w-full max-w-2xl mx-auto px-4">
+            <div className="w-full max-w-2xl mx-auto bg-[#1a1a1d] border border-[#2a2a2e] rounded-xl p-4 shadow-md text-white">
+                {/* Área de creación de post */}
+                <div className="flex items-start gap-3">
+                    <div className="flex-1">
+                        <section className="flex-1 flex gap-3">
+                            <img
+                                src={avatar_url}
+                                alt="Avatar"
+                                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border border-gray-600"
                             />
-                        </label>
-                        <button
-                            onClick={handlePost}
-                            className="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
-                        >
-                            <Send className="w-4 h-4" />
-                            Publicar
-                        </button>
+                            <textarea
+                                className="w-full pt-3 bg-transparent border-none resize-none outline-none text-white placeholder-gray-400 text-sm sm:text-base"
+                                rows={3}
+                                placeholder="¿Qué estás pensando?"
+                                value={text}
+                                onChange={(e) => setText(e.target.value)}
+                            />
+
+                        </section>
+                        <section className="flex relative flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-3 gap-2">
+                            <label className="flex items-center gap-2 text-cyan-400 cursor-pointer text-sm">
+                                <Image className="w-5 h-5" />
+                                <span>Foto</span>
+                                <input
+                                    // type="file"
+                                    // accept="image/*"
+                                    // onChange={handleImageChange}
+                                    className="hidden"
+                                    onClick={(e) => { alert("Funcionalidad en desarrollo") }}
+                                />
+                            </label>
+                            <button
+                                onClick={handlePost}
+                                className="bg-cyan-600 cursor-pointer hover:bg-cyan-500 text-white px-4 py-2 rounded-xl text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
+                            >
+                                <Send className="w-4 h-4" />
+                                Publicar
+                            </button>
+
+                            {error && (
+                                <p className={`
+                                    absolute right-0 text-sm text-red-500
+                                 transition-all duration-300 ease-in-out -bottom-2
+                                  ${visible ? "opacity-100 translate-y-8" : "opacity-0 translate-y-4"}
+                                `}>
+                                    {error}
+                                </p>
+                            )}
+                        </section>
                     </div>
                 </div>
             </div>
-
-            {/* Post de ejemplo */}
-            <div className="mt-6 border-t border-[#2a2a2e] pt-4">
-                <div className="flex items-center gap-3 mb-2">
-                    <img
-                        src={mockPost.avatar}
-                        alt="Avatar"
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border border-gray-600"
-                    />
-                    <span className="font-semibold text-sm sm:text-base">
-                        {mockPost.username}
-                    </span>
-                </div>
-                <p className="text-sm sm:text-base">{mockPost.text}</p>
-                <img
-                    src={mockPost.image}
-                    alt="Post"
-                    className="mt-2 w-full max-h-[400px] object-cover rounded-lg border border-gray-600"
-                />
-            </div>
-        </div>
+            {posts.map(post => (
+                <section key={post.idPost} className="mt-6 w-full bg-[#1a1a1d] border border-[#2a2a2e] rounded-xl p-4 shadow-md text-white">
+                    <div className="flex items-center gap-3 mb-2">
+                        <img
+                            src={post.userInfo.avatar_url || avatar_url}
+                            alt="Avatar"
+                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border border-gray-600"
+                        />
+                        <div className="flex flex-col">
+                            <p className="font-semibold text-sm sm:text-base">
+                                {post.userInfo.full_name}
+                            </p>
+                            <p className="text-gray-400 text-xs">
+                                {post.createdAt
+                                    ? `${new Date(post.createdAt).toLocaleDateString(undefined, {
+                                        day: "2-digit",
+                                        month: "short"
+                                    })} ${new Date(post.createdAt).toLocaleTimeString(undefined, {
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}`
+                                    : "Justo ahora"}
+                            </p>
+                        </div>
+                    </div>
+                    <p className="text-sm sm:text-base">{post.content}</p>
+                    {post.imageUrl && <img
+                        src={post.imageUrl}
+                        alt="Post"
+                        className="mt-2 w-full max-h-[400px] object-cover rounded-lg border border-gray-600"
+                    />}
+                </section>
+            ))}
+        </section>
     );
 }

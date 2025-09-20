@@ -1,4 +1,4 @@
-import { set } from 'mongoose';
+
 import axiosInstance from '../api/axiosInstanced'
 import React, { createContext, useEffect, useState } from 'react';
 
@@ -22,9 +22,9 @@ const UserProvider = ({ children }) => {
         }
     };
 
-    const getAllFriendsByUser = async () => {
+    const getAllFriendsByUser = async (param) => {
         try {
-            const response = await axiosInstance.get(`friendship/allFriendsByUser`, {
+            const response = await axiosInstance.get(`friendship/${param}`, {
                 withCredentials: true
             });
             return response.data;

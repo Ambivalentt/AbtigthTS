@@ -2,7 +2,7 @@ import { Mail, Calendar, User, Users } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 
-const ProfileInfoList = ({ user }) => {
+const ProfileInfoList = ({ user, friends }) => {
   const { email, birthdate } = user;
   const formattedBirthdate = birthdate
     ? format(parseISO(birthdate), "d 'de' MMMM 'de' yyyy", { locale: es })
@@ -24,7 +24,9 @@ const ProfileInfoList = ({ user }) => {
       </div>
       <div className="flex items-center gap-3 bg-[#1f1f23] p-4 rounded-xl border border-[#2c2c30]">
         <Users className="w-6 h-6 text-cyan-400" />
-        <span>23 amigos</span>
+        {friends ? (
+          <span>Amigos: {friends.length}</span>
+        ) : (<span>No se encontro amigos</span>)}
       </div>
     </div>
   );

@@ -7,7 +7,10 @@ import 'dotenv/config';
 import friendShip from './routes/friendShip';
 import message from './routes/message';
 import conversation from './routes/conversation';
+import posts from './routes/posts';
+
 import http from 'http';
+
 import { socketAuthMiddleware, setupSocket } from './middleware/authMiddleware';
 
 import { Server } from 'socket.io'
@@ -39,6 +42,7 @@ app.use('/user', userRoutes);
 app.use('/friendship', friendShip);
 app.use('/message', message);
 app.use('/conversation', conversation);
+app.use('/posts', posts);
 
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
