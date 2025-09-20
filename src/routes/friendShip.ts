@@ -8,6 +8,6 @@ router.post('/request', authMiddleware, createFriendShip);
 router.get('/notifyFriendShipReq', authMiddleware, friendShipRelation);
 router.get('/relationShip', authMiddleware, getRelationShipById);
 router.put('/accept', authMiddleware, acceptFriendRequest);
-router.get('/userFriends/:username', getAllFriendByUserId);
+router.get('/:username', getAllFriendByUserId);
 router.get('/status/:username', authMiddleware, getStatusFriendShipByParams);
 export default router;
