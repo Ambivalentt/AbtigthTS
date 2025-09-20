@@ -51,5 +51,17 @@ const acceptFriendshipRequest = async (requestId) => {
     }
 }
 
+const friendShipStatusByParams = async (username) => {
+    try {
+        const response = await axiosInstance.get(`friendship/status/${username}`, {
+            withCredentials: true
+        })
+        return response.data;
+    }catch (error) {
+        console.error("Error fetching friendship status:", error);
+        throw error.message;
+    }
+}
 
-export { createRequest, allRequestsendedByUser, friendShipRequest, acceptFriendshipRequest };
+
+export { createRequest, allRequestsendedByUser, friendShipRequest, acceptFriendshipRequest, friendShipStatusByParams };

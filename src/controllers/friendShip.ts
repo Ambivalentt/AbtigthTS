@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { FriendRequestFn, FriendsByUsernameParams } from '../types/friendRequest';
 import FriendRequestRepo from '../repositories/friendship';
 import errorHandler from '../utils/errorHandler';
@@ -69,6 +69,10 @@ const acceptFriendRequest = async (req: FriendRequestFn, res: Response): Promise
 const getAllFriendByUserId = async (req: FriendsByUsernameParams, res: Response): Promise<void> => {
     try {
         const { username } = req.params;
+          if (!username) {
+            res.status(400).json({ message: 'Username parameter is required' });
+            return;
+        } 
 
         const friendships = await FriendRequestRepo.getFriendshipById(username);
         res.status(200).json(friendships);
@@ -77,5 +81,26 @@ const getAllFriendByUserId = async (req: FriendsByUsernameParams, res: Response)
     }
 }
 
+const getStatusFriendShipByParams = async (req: FriendsByUsernameParams, res: Response): Promise<void> => {
+    try {
+        const { username } = req.params;
+        if (!username) {
+            res.status(400).json({ message: 'Username parameter is required' });
+            return;
+        } 
 
-export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest, getAllFriendByUserId }
+        const id = req.user?._id;
+        if (!id) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+
+        const friendshipStatus = await FriendRequestRepo.statusFriendshipByParams(id, username);
+        res.status(200).json(friendshipStatus);
+    }catch (error) {
+        res.status(400).json({ message: errorHandler(error).message });
+    }
+}
+
+
+export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest, getAllFriendByUserId, getStatusFriendShipByParams }

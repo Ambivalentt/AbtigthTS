@@ -10,7 +10,7 @@ export interface FriendRequestBody {
                    
 //Request<Params, ResponseBody, RequestBody, Query>
 export interface FriendUsernameParams {
-    username: string;
+    username?: string;
 }
 
 export interface FriendRequestFn extends Request< {}, {}, FriendRequestBody> {
@@ -25,3 +25,4 @@ export interface FriendsByUsernameParams extends Request<FriendUsernameParams, {
 export type FriendShipWithUser = FriendshipType & {
     user: UserType; // Información del usuario asociado a la solicitud
 }
+

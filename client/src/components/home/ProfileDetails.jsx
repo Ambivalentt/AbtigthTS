@@ -3,11 +3,37 @@ import LoadingProfile from "./LoadingProfile.jsx";
 import { useEffect, useState } from "react";
 import { useStateContext } from "../../context/user.jsx";
 import FriendsSection from "../OwnerProfile/sections/FriendSection.jsx";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 
-const ShowDetails = ({ userProfile, friends, friendsLoading }) => {
 
+const ShowDetails = ({ userProfile, friends, friendsLoading, buttonFriendStatus, buttonLoading }) => {
 
     const { avatar_url, full_name, username, birthdate, email } = userProfile;
+    console.log(buttonLoading);
+    const formattedBirthdate = birthdate
+        ? format(parseISO(birthdate), "d 'de' MMMM 'de' yyyy", { locale: es })
+        : "Agregar fecha de nacimiento";
+
+    let buttonText = "";
+    let buttonStyle = "";
+    let disabled = false;
+
+   
+
+    if(buttonFriendStatus === null){
+        buttonText = "Agregar amigo"
+        buttonStyle = "bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg transition-colors duration-300"
+    }else if(buttonFriendStatus !==null && buttonFriendStatus === "pending"){
+        buttonText = "Solicitud enviada"
+        buttonStyle = "bg-gray-500 text-white px-4 py-2 rounded-lg cursor-not-allowed"
+        disabled = true;
+    }else if(buttonFriendStatus !==null && buttonFriendStatus === "accepted"){
+        buttonText = "Es tu amigo"
+        buttonStyle = "bg-green-600 text-white px-4 py-2 rounded-lg cursor-not-allowed"
+        disabled = true;
+    }
+
 
     const comments = [
         {
@@ -44,6 +70,9 @@ const ShowDetails = ({ userProfile, friends, friendsLoading }) => {
                     <h2 className="text-3xl font-extrabold">{full_name}</h2>
                     <p className="text-cyan-400 text-lg">@{username}</p>
                 </div>
+                {buttonLoading ? (
+                    <div className="ml-auto animate-pulse bg-gray-700 h-10 w-32 rounded-lg"></div>
+                ): <button disabled={disabled} className={`ml-auto ${buttonStyle}`}>{buttonText}</button>}
             </div>
             {/* Info */}
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-base sm:text-lg">
@@ -53,7 +82,7 @@ const ShowDetails = ({ userProfile, friends, friendsLoading }) => {
                 </div>
                 <div className="flex items-center gap-3 bg-[#1f1f23] p-4 rounded-xl border border-[#2c2c30]">
                     <Calendar className="w-6 h-6 text-cyan-400" />
-                    <span>Fecha de nacimiento: {birthdate || 'Agregar fecha de nacimiento'}</span>
+                    <span>Fecha de nacimiento: {formattedBirthdate || 'Agregar fecha de nacimiento'}</span>
                 </div>
                 <div className="flex items-center gap-3 bg-[#1f1f23] p-4 rounded-xl border border-[#2c2c30]">
                     <User className="w-6 h-6 text-cyan-400" />

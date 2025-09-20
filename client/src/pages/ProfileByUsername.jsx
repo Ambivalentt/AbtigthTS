@@ -6,7 +6,8 @@ import LoadingProfile from "../components/home/LoadingProfile";
 import NotFound404 from "./NotFound404";
 import OwnerProfile from "../components/OwnerProfile/OwnerProfile.jsx";
 import { useStateContext } from "../context/user.jsx";
-
+import { friendShipStatusByParams } from '../api/friendship.jsx'
+import { set } from "mongoose";
 
 const MyProfile = () => {
     const [loading, setLoading] = useState(true);
@@ -16,6 +17,9 @@ const MyProfile = () => {
     const [friendsLoading, setFriendsLoading] = useState(true);
     const { username } = useParams();
     const { user, getAllFriendsByUser } = useStateContext();
+    //buttons state
+    const [buttonFriendStatus, setButtonFriendStatus] = useState(null);
+    const [buttonLoading, setButtonLoading] = useState(true);
 
     const fetchUserProfile = async () => {
         try {
@@ -39,18 +43,37 @@ const MyProfile = () => {
         try {
             const friendsData = await getAllFriendsByUser(username);
             setFriends(friendsData);
-            console.log(friendsData);
         } catch (error) {
             console.error("Error fetching friends:", error);
         } finally {
             setFriendsLoading(false);
         }
     }
+
+
     useEffect(() => {
+        setButtonFriendStatus(null);
+        setButtonLoading(true);
         setLoading(true);
         fetchUserProfile();
         fetchFriends();
+        fetchButtonFriendStatus();
     }, [username]);
+
+
+    const fetchButtonFriendStatus = async () => {
+        try {
+            if (!user) return;
+            if (user.username === username) return;
+            const response = await friendShipStatusByParams(username);
+            if (!response) return
+            setButtonFriendStatus(response.status)
+        } catch (error) {
+            console.error("Error fetching friend requests:", error);
+        } finally {
+            setButtonLoading(false);
+        }
+    }
 
     if (userFound === false) {
         return <NotFound404 />
@@ -68,7 +91,12 @@ const MyProfile = () => {
                     {user && user.username === username ? (
                         <OwnerProfile userProfile={userProfile} friends={friends} friendsLoading={friendsLoading} />
                     ) : (
-                        <ShowDetails userProfile={userProfile} friends={friends} friendsLoading={friendsLoading} />
+                        <ShowDetails
+                            userProfile={userProfile}
+                            friends={friends}
+                            friendsLoading={friendsLoading}
+                            buttonFriendStatus={buttonFriendStatus}
+                            buttonLoading={buttonLoading} />
                     )}
                 </main>
             )}
