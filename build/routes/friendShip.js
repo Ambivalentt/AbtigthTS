@@ -11,5 +11,7 @@ router.post('/request', authMiddleware_1.authMiddleware, friendShip_1.createFrie
 router.get('/notifyFriendShipReq', authMiddleware_1.authMiddleware, friendShip_1.friendShipRelation);
 router.get('/relationShip', authMiddleware_1.authMiddleware, friendShip_1.getRelationShipById);
 router.put('/accept', authMiddleware_1.authMiddleware, friendShip_1.acceptFriendRequest);
-router.get('/allFriendsByUser', authMiddleware_1.authMiddleware, friendShip_1.getAllFriendByUserId);
+router.get('/:username', friendShip_1.getAllFriendByUserParam);
+router.get('/status/:username', authMiddleware_1.authMiddleware, friendShip_1.getStatusFriendShipByParams);
+router.get('/chatbox/friends', authMiddleware_1.authMiddleware, friendShip_1.getFriendsByIdForChatBox);
 exports.default = router;

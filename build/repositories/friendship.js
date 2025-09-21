@@ -46,6 +46,28 @@ class FriendshipRepo {
             throw (0, errorHandler_1.default)(error);
         }
     }
+    //muestra el estado de amistad entre dos usuarios (cookies id y parameters username)
+    static async statusFriendshipByParams(requester_id, username_params) {
+        try {
+            const userIdByParams = await User_1.default.findOne({ username: username_params }, ('_id'));
+            if (!userIdByParams) {
+                throw new Error('User not found with the provided username');
+            }
+            const friendShipStatus = await Friendship_1.default.findOne({
+                $or: [
+                    { requester_id: requester_id, receiver_id: userIdByParams._id },
+                    { requester_id: userIdByParams._id, receiver_id: requester_id }
+                ]
+            });
+            if (!friendShipStatus) {
+                return null; // No friendship found
+            }
+            return friendShipStatus;
+        }
+        catch (error) {
+            throw (0, errorHandler_1.default)(error);
+        }
+    }
     //muestra solicitudes de amistad pendientes para el usuario //componente notificaciones
     static async friendShipRequest(receiver_id) {
         try {
@@ -77,6 +99,7 @@ class FriendshipRepo {
             throw (0, errorHandler_1.default)(error);
         }
     }
+    //acepta una solicitud de amistad
     static async acceptFriendship(receiver_id, request_id) {
         try {
             if (!mongoose_1.Types.ObjectId.isValid(receiver_id) || !mongoose_1.Types.ObjectId.isValid(request_id)) {
@@ -102,22 +125,53 @@ class FriendshipRepo {
             throw (0, errorHandler_1.default)(error);
         }
     }
-    static async getFriendshipById(user_id) {
+    static async getFriendshipByParams(username) {
         try {
-            if (!mongoose_1.Types.ObjectId.isValid(user_id)) {
+            if (typeof username !== 'string' || username.trim() === '') {
                 throw new Error('Invalid ObjectId format');
+            }
+            const userId = await User_1.default.findOne({ username: username }, ('_id'));
+            if (!userId) {
+                throw new Error('User not found');
             }
             const friendship = await Friendship_1.default.find({
                 status: 'accepted',
                 $or: [
-                    { requester_id: user_id },
-                    { receiver_id: user_id }
+                    { requester_id: userId._id },
+                    { receiver_id: userId._id }
                 ]
             });
             if (!friendship || friendship.length === 0) {
                 return null; // No friendship found
             }
-            const userIds = friendship.map(f => f.requester_id.equals(user_id) ? f.receiver_id : f.requester_id);
+            const userIds = friendship.map(f => f.requester_id.equals(userId._id) ? f.receiver_id : f.requester_id);
+            const users = await User_1.default.find({ _id: userIds }, ('-password -__v -created_at'));
+            if (!users || users.length === 0) {
+                return null; // No users found
+            }
+            return users;
+        }
+        catch (error) {
+            throw (0, errorHandler_1.default)(error);
+        }
+    }
+    //obtiene amigos dependiendo del username y devuelve informacion de los usuarios, foto, nombre, username, id
+    static async getFriendsByIdforChatbox(userId) {
+        try {
+            if (!userId) {
+                throw new Error('User not found');
+            }
+            const friendship = await Friendship_1.default.find({
+                status: 'accepted',
+                $or: [
+                    { requester_id: userId },
+                    { receiver_id: userId }
+                ]
+            });
+            if (!friendship || friendship.length === 0) {
+                return null; // No friendship found
+            }
+            const userIds = friendship.map(f => f.requester_id.equals(userId) ? f.receiver_id : f.requester_id);
             const users = await User_1.default.find({ _id: userIds }, ('-password -__v -created_at'));
             if (!users || users.length === 0) {
                 return null; // No users found

@@ -40,6 +40,7 @@ exports.setupSocket = exports.socketAuthMiddleware = exports.authMiddleware = vo
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 require("dotenv/config");
 const cookie = __importStar(require("cookie"));
+// Middleware para rutas protegidas verificado 
 const authMiddleware = (req, res, next) => {
     const token = req.cookies.access_token;
     if (!token) {
@@ -48,7 +49,7 @@ const authMiddleware = (req, res, next) => {
     }
     try {
         const data = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        req.user = data; // Cast to UserType
+        req.user = data;
         next();
     }
     catch (err) {
@@ -56,6 +57,8 @@ const authMiddleware = (req, res, next) => {
     }
 };
 exports.authMiddleware = authMiddleware;
+///////////////////////////////////////////////////////
+// Middleware para sockets.io
 const onlineUsers = new Map();
 const socketAuthMiddleware = (io) => {
     io.use((socket, next) => {

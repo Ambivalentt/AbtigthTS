@@ -12,6 +12,7 @@ require("dotenv/config");
 const friendShip_1 = __importDefault(require("./routes/friendShip"));
 const message_1 = __importDefault(require("./routes/message"));
 const conversation_1 = __importDefault(require("./routes/conversation"));
+const posts_1 = __importDefault(require("./routes/posts"));
 const http_1 = __importDefault(require("http"));
 const authMiddleware_1 = require("./middleware/authMiddleware");
 const socket_io_1 = require("socket.io");
@@ -36,9 +37,11 @@ app.use('/user', user_1.default);
 app.use('/friendship', friendShip_1.default);
 app.use('/message', message_1.default);
 app.use('/conversation', conversation_1.default);
+app.use('/posts', posts_1.default);
 app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
 });
+console.log("📂 Posts router:", posts_1.default?.stack ? "OK loaded" : posts_1.default);
 (0, server_1.default)()
     .then(() => {
     console.log('MongoDB connected successfully');

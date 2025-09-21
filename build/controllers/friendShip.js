@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllFriendByUserId = exports.acceptFriendRequest = exports.friendShipRelation = exports.getRelationShipById = exports.createFriendShip = void 0;
+exports.getFriendsByIdForChatBox = exports.getStatusFriendShipByParams = exports.getAllFriendByUserParam = exports.acceptFriendRequest = exports.friendShipRelation = exports.getRelationShipById = exports.createFriendShip = void 0;
 const friendship_1 = __importDefault(require("../repositories/friendship"));
 const errorHandler_1 = __importDefault(require("../utils/errorHandler"));
 const createFriendShip = async (req, res) => {
@@ -72,18 +72,53 @@ const acceptFriendRequest = async (req, res) => {
     }
 };
 exports.acceptFriendRequest = acceptFriendRequest;
-const getAllFriendByUserId = async (req, res) => {
+const getAllFriendByUserParam = async (req, res) => {
     try {
-        const userId = req.user?._id;
-        if (!userId) {
-            res.status(401).json({ message: 'Unauthorized' });
+        const { username } = req.params;
+        if (!username) {
+            res.status(400).json({ message: 'Username parameter is required' });
             return;
         }
-        const friendships = await friendship_1.default.getFriendshipById(userId);
+        const friendships = await friendship_1.default.getFriendshipByParams(username);
         res.status(200).json(friendships);
     }
     catch (error) {
         res.status(400).json({ message: (0, errorHandler_1.default)(error).message });
     }
 };
-exports.getAllFriendByUserId = getAllFriendByUserId;
+exports.getAllFriendByUserParam = getAllFriendByUserParam;
+const getStatusFriendShipByParams = async (req, res) => {
+    try {
+        const { username } = req.params;
+        if (!username) {
+            res.status(400).json({ message: 'Username parameter is required' });
+            return;
+        }
+        const id = req.user?._id;
+        if (!id) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+        const friendshipStatus = await friendship_1.default.statusFriendshipByParams(id, username);
+        res.status(200).json(friendshipStatus);
+    }
+    catch (error) {
+        res.status(400).json({ message: (0, errorHandler_1.default)(error).message });
+    }
+};
+exports.getStatusFriendShipByParams = getStatusFriendShipByParams;
+const getFriendsByIdForChatBox = async (req, res) => {
+    try {
+        const id = req.user?._id;
+        if (!id) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+        const friends = await friendship_1.default.getFriendsByIdforChatbox(id);
+        res.status(200).json(friends);
+    }
+    catch (error) {
+        res.status(400).json({ message: (0, errorHandler_1.default)(error).message });
+    }
+};
+exports.getFriendsByIdForChatBox = getFriendsByIdForChatBox;
