@@ -55,6 +55,7 @@ const MyProfile = () => {
         setButtonFriendStatus(null);
         setButtonLoading(true);
         setLoading(true);
+        setFriends([])
         fetchUserProfile();
         fetchFriends();
         fetchButtonFriendStatus();
