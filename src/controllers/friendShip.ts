@@ -66,7 +66,7 @@ const acceptFriendRequest = async (req: FriendRequestFn, res: Response): Promise
     }
 }
 
-const getAllFriendByUserId = async (req: FriendsByUsernameParams, res: Response): Promise<void> => {
+const getAllFriendByUserParam = async (req: FriendsByUsernameParams, res: Response): Promise<void> => {
     try {
         const { username } = req.params;
           if (!username) {
@@ -74,7 +74,7 @@ const getAllFriendByUserId = async (req: FriendsByUsernameParams, res: Response)
             return;
         } 
 
-        const friendships = await FriendRequestRepo.getFriendshipById(username);
+        const friendships = await FriendRequestRepo.getFriendshipByParams(username);
         res.status(200).json(friendships);
     } catch (error) {
         res.status(400).json({ message: errorHandler(error).message });
@@ -88,13 +88,11 @@ const getStatusFriendShipByParams = async (req: FriendsByUsernameParams, res: Re
             res.status(400).json({ message: 'Username parameter is required' });
             return;
         } 
-
         const id = req.user?._id;
         if (!id) {
             res.status(401).json({ message: 'Unauthorized' });
             return;
         }
-
         const friendshipStatus = await FriendRequestRepo.statusFriendshipByParams(id, username);
         res.status(200).json(friendshipStatus);
     }catch (error) {
@@ -102,5 +100,19 @@ const getStatusFriendShipByParams = async (req: FriendsByUsernameParams, res: Re
     }
 }
 
+const getFriendsByIdForChatBox = async (req: FriendsByUsernameParams, res: Response):Promise<void> =>{
+    try{
+        const id = req.user?._id;
+        if(!id){
+            res.status(401).json({message: 'Unauthorized'});
+            return;
+        }
+        const friends = await FriendRequestRepo.getFriendsByIdforChatbox(id);
+        res.status(200).json(friends);
+    }catch(error){
+        res.status(400).json({ message: errorHandler(error).message });
+    }
 
-export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest, getAllFriendByUserId, getStatusFriendShipByParams }
+}
+
+export { createFriendShip, getRelationShipById, friendShipRelation, acceptFriendRequest, getAllFriendByUserParam, getStatusFriendShipByParams, getFriendsByIdForChatBox }

@@ -23,7 +23,6 @@ export default function ChatBox({ user, getAllFriendsByUser }) {
   const [friends, setFriends] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState({});
   const [onlineLoaded, setOnlineLoaded] = useState(false);
-
   const socketRef = useRef(null);
 
   // Inicializa el socket solo una vez

@@ -24,7 +24,7 @@ const UserProvider = ({ children }) => {
 
     const getAllFriendsByUser = async (param) => {
         try {
-            const response = await axiosInstance.get(`friendship/${param}`, {
+            const response = await axiosInstance.get(`/friendship/${param}`, {
                 withCredentials: true
             });
             return response.data;
@@ -33,12 +33,25 @@ const UserProvider = ({ children }) => {
             throw error.message;
         }
     }
+
+    const chatBoxAllFriendsByUserId = async () => {
+        try {
+            const response = await axiosInstance.get('/friendship/chatbox/friends', {
+                withCredentials: true
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching all friends for chatbox:", error);
+            throw error.message;
+        }
+    }
+
     useEffect(() => {
         fetchUser();
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, setUser, loading, getAllFriendsByUser }}>
+        <UserContext.Provider value={{ user, setUser, loading, getAllFriendsByUser, chatBoxAllFriendsByUserId }}>
             {children}
         </UserContext.Provider>
     )

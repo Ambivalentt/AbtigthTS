@@ -107,6 +107,7 @@ class FriendshipRepo {
         }
     }
 
+    //acepta una solicitud de amistad
     static async acceptFriendship(receiver_id: Types.ObjectId, request_id: Types.ObjectId): Promise<FriendshipType> {
         try {
             if (!Types.ObjectId.isValid(receiver_id) || !Types.ObjectId.isValid(request_id)) {
@@ -138,7 +139,7 @@ class FriendshipRepo {
         }
     }
 
-    static async getFriendshipById(username: string): Promise<UserType[] | null> {
+    static async getFriendshipByParams(username: string): Promise<UserType[] | null> {
         try {
             if (typeof username !== 'string' || username.trim() === '') {
                 throw new Error('Invalid ObjectId format');
@@ -162,6 +163,35 @@ class FriendshipRepo {
 
             const userIds = friendship.map(f => f.requester_id.equals(userId._id) ? f.receiver_id : f.requester_id);
             const users = await User.find({ _id: userIds }, ('-password -__v -created_at'));
+            if (!users || users.length === 0) {
+                return null; // No users found
+            }
+            return users
+        } catch (error) {
+            throw errorHandler(error);
+        }
+    }
+    //obtiene amigos dependiendo del username y devuelve informacion de los usuarios, foto, nombre, username, id
+     static async getFriendsByIdforChatbox(userId: Types.ObjectId): Promise<UserType[] | null> {
+        try {
+            if (!userId) {
+                throw new Error('User not found');
+            }
+            const friendship = await friendshipRequest.find({
+                status: 'accepted',
+                $or: [
+                    { requester_id: userId },
+                    { receiver_id: userId}
+                ]
+            });
+            if (!friendship || friendship.length === 0) {
+                return null; // No friendship found
+            }
+
+            const userIds = friendship.map(f => f.requester_id.equals(userId) ? f.receiver_id : f.requester_id);
+
+            const users = await User.find({ _id: userIds }, ('-password -__v -created_at'));
+
             if (!users || users.length === 0) {
                 return null; // No users found
             }
