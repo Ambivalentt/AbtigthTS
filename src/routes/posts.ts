@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/create', authMiddleware, createPost);
 router.get('/all', authMiddleware, getAllPosts);
+console.log("✅ Posts router loaded");
 
 export default router;
