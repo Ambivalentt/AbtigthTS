@@ -50,7 +50,7 @@ app.use((req, res) => {
 
 
 
-
+console.log("📂 Posts router:", posts?.stack ? "OK loaded" : posts);
 mongoDB()
     .then(() => {
         console.log('MongoDB connected successfully');
